@@ -6,8 +6,8 @@
 #include <string.h>
 #define MAX 200
 
-char userTxt[MAX] = "./User.txt";
-char bookTxt[MAX] = "./Book.txt";
+char userTxt[MAX] = "./UserInfo.txt";
+char bookTxt[MAX] = "./MyLibrary.txt";
 //static int userID = 0, userNum = 0;
 
 typedef struct {
@@ -52,11 +52,6 @@ int findUserByName(char myAccountName[], char myPsw[]) {
 		//If account matched, compare password.
 		if (strcmp(account, myAccountName) == 0) {
 			psw = strtok(NULL, ",");
-		//	psw = _strdup(buffer);
-		//	psw = strtok(psw, ",");
-		//	for (int i = 0; i < 4; i++) {
-		//		psw = strtok(NULL, ",");
-		//	}
 			if (strcmp(psw, myPsw) == 0) {
 				printf("Log in successfully.\n");
 				userType = strtok(NULL, "\n");
@@ -83,3 +78,6 @@ int main(void) {
 	findUserByName(myAccountName, myPsw);
 	return EXIT_SUCCESS;
 }
+
+
+
