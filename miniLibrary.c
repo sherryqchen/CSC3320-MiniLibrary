@@ -6,8 +6,8 @@
 #include <string.h>
 #define MAX 200
 
-char userTxt[MAX] = "./UserInfo.txt";
-char bookTxt[MAX] = "./MyLibrary.txt";
+const char userTxt[MAX] = "./UserInfo.txt";
+const char bookTxt[MAX] = "./MyLibrary.txt";
 //static int userID = 0, userNum = 0;
 
 typedef struct {
@@ -65,8 +65,50 @@ int findUserByName(char myAccountName[], char myPsw[]) {
 			}
 		}	
 	}
+	fclose(userInfo);
 	printf("Log in failed\n");
 	return EXIT_SUCCESS;
+}
+/* Get the last book's id number from myLibrary.txt.*/
+int getBookID() {
+	char buffer[MAX];
+	FILE *bookInfo = fopen(bookTxt, "r+");
+	if (!bookInfo) {
+		printf("Failed to open MyLibrary.txt\n");
+		exit(1);
+	}
+	while (!feof(bookInfo)) 
+		fgets(buffer, MAX, bookInfo);
+	char* bookIdString = strtok(_strdup(buffer),",");
+	int bookID = strtol(bookIdString,bookIdString+strlen(bookIdString-1),10);
+	return bookID;
+}
+
+void addBook() {
+	char author[MAX] = { 0 };
+	char title[MAX] = { 0 };
+
+	printf("Enter book title:\n");
+	scanf(" %[^\n]%*c", &title);
+	/*input string with whitespace.
+	[^\n]take input until newline;
+	*c reads newline and discard it to prevent further problem for next input*/
+	printf("Enter author name:\n");
+	scanf(" %[^\n]s%*c", &author);
+	
+	if (strlen(author) == 0 || strlen(title) == 0) {
+		printf("Invalid Entry! Try again");
+		/*here go back to main menu*/
+	}
+	FILE *bookInfo = fopen(bookTxt, "a+");
+	int bookID = getBookID();
+	bookID++;
+	fprintf(bookInfo, "%d, %s, %s, Library, null, null", bookID, title, author);
+	fprintf(bookInfo, "\n");
+	fclose(bookInfo);
+	printf("Book: %s author: %s was added successfully!\n", title, author);
+	/*go back to main menu or ask for enter more book*/
+
 }
 
 int main(void) {
@@ -76,8 +118,6 @@ int main(void) {
 	printf("Enter your password: ");
 	scanf("%s", &myPsw);
 	findUserByName(myAccountName, myPsw);
+	addBook();
 	return EXIT_SUCCESS;
 }
-
-
-
